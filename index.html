@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orientation Carrefour</title>
+    <style>
+        :root {
+            --carrefour-blue: #003896;
+            --carrefour-red: #ed1c24;
+        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        header { background: var(--carrefour-blue); color: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--carrefour-red); }
+        .container { padding: 20px; max-width: 500px; margin: auto; }
+        .search-box { width: 100%; padding: 15px; font-size: 16px; border: 2px solid #ddd; border-radius: 25px; box-sizing: border-box; outline: none; }
+        .result-card { background: white; margin-top: 20px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none; }
+        .allee-number { font-size: 48px; font-weight: bold; color: var(--carrefour-blue); display: block; }
+        .suggestion-list { background: white; border-radius: 10px; margin-top: 5px; list-style: none; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .suggestion-item { padding: 10px 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Où est mon produit ?</h1>
+</header>
+
+<div class="container">
+    <input type="text" id="searchInput" class="search-box" placeholder="Chercher un produit (ex: Lait, Pâtes...)" oninput="searchProduct()">
+    <ul id="suggestions" class="suggestion-list"></ul>
+
+    <div id="resultCard" class="result-card">
+        <h2 id="resProduit">Produit</h2>
+        <p>Se trouve dans l'allée :</p>
+        <span class="allee-number" id="resAllee">-</span>
+        <p>Rayon : <strong id="resRayon">-</strong></p>
+    </div>
+</div>
+
+<script>
+    // Base de données simplifiée
+    const catalogue = [
+        { nom: "Lait", allee: "12", rayon: "Crémerie" },
+        { nom: "Pâtes", allee: "05", rayon: "Épicerie" },
+        { nom: "Riz", allee: "05", rayon: "Épicerie" },
+        { nom: "Shampoing", allee: "22", rayon: "Hygiène" },
+        { nom: "Biscuits", allee: "08", rayon: "Goûter" },
+        { nom: "Eau minérale", allee: "01", rayon: "Boissons" },
+        { nom: "Café", allee: "04", rayon: "Petit-déjeuner" }
+    ];
+
+    function searchProduct() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const suggestions = document.getElementById('suggestions');
+        const resultCard = document.getElementById('resultCard');
+        suggestions.innerHTML = "";
+
+        if (input.length < 1) {
+            resultCard.style.display = "none";
+            return;
+        }
+
+        const matches = catalogue.filter(p => p.nom.toLowerCase().includes(input));
+
+        matches.forEach(product => {
+            const li = document.createElement('li');
+            li.className = "suggestion-item";
+            li.innerText = product.nom;
+            li.onclick = () => showResult(product);
+            suggestions.appendChild(li);
+        });
+    }
+
+    function showResult(product) {
+        document.getElementById('resProduit').innerText = product.nom;
+        document.getElementById('resAllee').innerText = product.allee;
+        document.getElementById('resRayon').innerText = product.rayon;
+        document.getElementById('resultCard').style.display = "block";
+        document.getElementById('suggestions').innerHTML = "";
+        document.getElementById('searchInput').value = product.nom;
+    }
+</script>
+
+</body>
+</html>
